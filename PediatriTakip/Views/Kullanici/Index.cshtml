@@ -1,0 +1,47 @@
+@model List<Kullanicilar>
+@{ ViewData["Title"] = "Kullanıcılar"; string? rol = ViewBag.Rol; }
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="mb-0">Kullanıcılar</h3>
+    <a asp-action="Ekle" class="btn btn-pediatri"><i class="bi bi-person-plus"></i> Yeni Kullanıcı</a>
+</div>
+<div class="btn-group btn-group-sm mb-3">
+    <a asp-action="Index" class="btn btn-outline-secondary @(rol == null ? "active" : "")">Tümü</a>
+    @foreach (var r in new[] { "Admin", "Doktor", "Veli" })
+    {
+        <a asp-action="Index" asp-route-rol="@r" class="btn btn-outline-secondary @(rol == r ? "active" : "")">@r</a>
+    }
+</div>
+<div class="card">
+    <table class="table table-hover mb-0">
+        <thead><tr><th>Ad Soyad</th><th>E-posta</th><th>Rol</th><th>Telefon</th><th>Uzmanlık</th><th></th></tr></thead>
+        <tbody>
+        @foreach (var k in Model)
+        {
+            <tr data-id="@k.Id">
+                <td>@k.AdSoyad</td>
+                <td>@k.Email</td>
+                <td><span class="badge @(k.Rol == "Admin" ? "bg-dark" : k.Rol == "Doktor" ? "bg-success" : "bg-info text-dark")">@k.Rol</span></td>
+                <td>@k.Telefon</td>
+                <td>@k.Uzmanlik</td>
+                <td class="text-end text-nowrap">
+                    <a asp-action="Duzenle" asp-route-id="@k.Id" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+                    <button class="btn btn-sm btn-outline-danger sil" data-id="@k.Id" data-ad="@k.AdSoyad"><i class="bi bi-trash"></i></button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+@section Scripts {
+<script>
+    // AJAX ile kullanıcı silme
+    $(".sil").on("click", function () {
+        const id = $(this).data("id");
+        if (!confirm($(this).data("ad") + " silinsin mi?")) return;
+        $.post("@Url.Action("Sil")/" + id, function (r) {
+            if (r.basarili) { $(`tr[data-id=${id}]`).fadeOut(300, function () { $(this).remove(); }); bildir("Kullanıcı silindi."); }
+            else bildir(r.mesaj, false);
+        });
+    });
+</script>
+}

@@ -1,0 +1,80 @@
+@model HastaVM
+@{
+    bool yeni = Model.Id == 0;
+    ViewData["Title"] = yeni ? "Yeni Hasta" : "Hasta Düzenle";
+}
+<h3 class="mb-3">@ViewData["Title"]</h3>
+<div class="card p-4" style="max-width:720px">
+    <form asp-action="@(yeni ? "Ekle" : "Duzenle")" asp-route-id="@(yeni ? null : Model.Id)" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="AdSoyad" class="form-label"></label>
+                <input asp-for="AdSoyad" class="form-control" />
+                <span asp-validation-for="AdSoyad" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="TcKimlikNo" class="form-label"></label>
+                <input asp-for="TcKimlikNo" class="form-control" maxlength="11" />
+                <span asp-validation-for="TcKimlikNo" class="text-danger small"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="DogumTarihi" class="form-label"></label>
+                <input asp-for="DogumTarihi" type="date" class="form-control" max="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                <span asp-validation-for="DogumTarihi" class="text-danger small"></span>
+                <div id="yasOnizleme" class="small text-muted"></div>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Cinsiyet" class="form-label"></label>
+                <select asp-for="Cinsiyet" class="form-select">
+                    <option value="">Seçin</option><option>Kız</option><option>Erkek</option>
+                </select>
+                <span asp-validation-for="Cinsiyet" class="text-danger small"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="KanGrubu" class="form-label"></label>
+                <select asp-for="KanGrubu" class="form-select">
+                    <option value="">Bilinmiyor</option>
+                    @foreach (var k in new[] { "0 Rh+", "0 Rh-", "A Rh+", "A Rh-", "B Rh+", "B Rh-", "AB Rh+", "AB Rh-" }) { <option>@k</option> }
+                </select>
+            </div>
+            <div class="col-12">
+                <label asp-for="Alerjiler" class="form-label"></label>
+                <input asp-for="Alerjiler" class="form-control" placeholder="Örn: Penisilin, yer fıstığı" />
+            </div>
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="col-md-6">
+                    <label asp-for="DoktorId" class="form-label"></label>
+                    <select asp-for="DoktorId" asp-items="ViewBag.Doktorlar" class="form-select"><option value="">Seçin</option></select>
+                    <span asp-validation-for="DoktorId" class="text-danger small"></span>
+                </div>
+            }
+            <div class="col-md-6">
+                <label asp-for="VeliId" class="form-label"></label>
+                <select asp-for="VeliId" asp-items="ViewBag.Veliler" class="form-select"><option value="">— Bağlı değil —</option></select>
+                <div class="form-text">Veli, kayıt sayfasından hesap açtıktan sonra burada listelenir.</div>
+            </div>
+        </div>
+        <div class="mt-4">
+            <button class="btn btn-pediatri">Kaydet</button>
+            <a asp-action="@(yeni ? "Index" : "Detay")" asp-route-id="@(yeni ? null : Model.Id)" class="btn btn-link">İptal</a>
+        </div>
+    </form>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // DOM: doğum tarihi seçilince yaşı anında göster
+        function yasGoster() {
+            const v = $("#DogumTarihi").val();
+            if (!v) return $("#yasOnizleme").text("");
+            const d = new Date(v), b = new Date();
+            let ay = (b.getFullYear() - d.getFullYear()) * 12 + b.getMonth() - d.getMonth();
+            if (b.getDate() < d.getDate()) ay--;
+            $("#yasOnizleme").text(ay < 0 ? "" : ay < 12 ? ay + " aylık" : Math.floor(ay / 12) + " yaş " + (ay % 12) + " ay");
+        }
+        $("#DogumTarihi").on("change", yasGoster);
+        yasGoster();
+    </script>
+}

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 700 400" width="700" height="400" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif" font-size="10.5">
+  <rect width="700" height="400" fill="#ffffff"/><defs>
+    <style>
+      .kutu { fill: #fff; stroke: #2b7a78; stroke-width: 1.4; }
+      .bas { fill: #2b7a78; }
+      .bt { fill: #fff; font-weight: 700; font-size: 11.5px; }
+      .pk { font-weight: 700; }
+      .fk { fill: #b5532a; }
+      .hat { fill: none; stroke: #555; stroke-width: 1.2; }
+      .kd { font-size: 10px; font-weight: 700; fill: #333; }
+    </style>
+  </defs>
+
+  <!-- Kullanicilar -->
+  <rect class="kutu" x="10" y="45" width="170" height="158" rx="4"/>
+  <rect class="bas" x="10" y="45" width="170" height="24" rx="4"/>
+  <text class="bt" x="95" y="61" text-anchor="middle">Kullanicilar</text>
+  <g transform="translate(18,0)">
+    <text class="pk" y="85">🔑 Id</text><text y="101">AdSoyad</text><text y="117">Email (UNIQUE)</text>
+    <text y="133">SifreHash</text><text y="149">Rol (Admin/Doktor/Veli)</text><text y="165">Telefon</text>
+    <text y="181">Uzmanlik</text><text y="197">OlusturmaTarihi</text>
+  </g>
+
+  <!-- Hastalar -->
+  <rect class="kutu" x="265" y="45" width="170" height="190" rx="4"/>
+  <rect class="bas" x="265" y="45" width="170" height="24" rx="4"/>
+  <text class="bt" x="350" y="61" text-anchor="middle">Hastalar</text>
+  <g transform="translate(273,0)">
+    <text class="pk" y="85">🔑 Id</text><text y="101">AdSoyad</text><text y="117">TcKimlikNo (UNIQUE)</text>
+    <text y="133">DogumTarihi</text><text y="149">Cinsiyet</text><text y="165">KanGrubu</text>
+    <text y="181">Alerjiler</text><text class="fk" y="197">DoktorId (FK)</text><text class="fk" y="213">VeliId (FK)</text>
+    <text y="229">KayitTarihi</text>
+  </g>
+
+  <!-- Muayeneler -->
+  <rect class="kutu" x="520" y="35" width="170" height="174" rx="4"/>
+  <rect class="bas" x="520" y="35" width="170" height="24" rx="4"/>
+  <text class="bt" x="605" y="51" text-anchor="middle">Muayeneler</text>
+  <g transform="translate(528,0)">
+    <text class="pk" y="75">🔑 Id</text><text class="fk" y="91">HastaId (FK)</text><text class="fk" y="107">DoktorId (FK)</text>
+    <text y="123">Tarih</text><text y="139">BoyCm</text><text y="155">KiloKg</text>
+    <text y="171">BasCevresiCm</text><text y="187">Tani</text><text y="203">DoktorNotu</text>
+  </g>
+
+  <!-- AsiKayitlari -->
+  <rect class="kutu" x="520" y="260" width="170" height="110" rx="4"/>
+  <rect class="bas" x="520" y="260" width="170" height="24" rx="4"/>
+  <text class="bt" x="605" y="276" text-anchor="middle">AsiKayitlari</text>
+  <g transform="translate(528,0)">
+    <text class="pk" y="300">🔑 Id</text><text class="fk" y="316">HastaId (FK)</text><text class="fk" y="332">AsiId (FK)</text>
+    <text y="348">UygulamaTarihi</text><text y="364">Notlar</text>
+  </g>
+
+  <!-- Asilar -->
+  <rect class="kutu" x="265" y="290" width="170" height="94" rx="4"/>
+  <rect class="bas" x="265" y="290" width="170" height="24" rx="4"/>
+  <text class="bt" x="350" y="306" text-anchor="middle">Asilar</text>
+  <g transform="translate(273,0)">
+    <text class="pk" y="330">🔑 Id</text><text y="346">Ad</text><text y="362">OnerilenAy</text><text y="378">Aciklama</text>
+  </g>
+
+  <!-- İlişkiler -->
+  <path class="hat" d="M180 81 H222 V193 H265"/>
+  <path class="hat" d="M180 81 H222 V209 H265"/>
+  <text class="kd" x="184" y="77">1</text><text class="kd" x="255" y="189">N</text><text class="kd" x="255" y="221">N</text>
+
+  <path class="hat" d="M435 81 H478 V87 H520"/>
+  <path class="hat" d="M435 81 H478 V312 H520"/>
+  <text class="kd" x="439" y="77">1</text><text class="kd" x="510" y="83">N</text><text class="kd" x="510" y="308">N</text>
+
+  <path class="hat" d="M435 326 H500 V328 H520"/>
+  <text class="kd" x="439" y="322">1</text>
+
+  <path class="hat" d="M95 45 V14 H605 V35" stroke-dasharray="4 3"/>
+  <text class="kd" x="99" y="38">1</text><text class="kd" x="610" y="31">N</text>
+  <text x="330" y="10" font-size="9.5" fill="#555">Kullanicilar.Id → Muayeneler.DoktorId</text>
+</svg>

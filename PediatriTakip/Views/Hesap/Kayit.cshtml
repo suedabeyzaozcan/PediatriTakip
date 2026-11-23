@@ -1,0 +1,66 @@
+@model KayitVM
+@{ ViewData["Title"] = "Veli Kaydı"; }
+<div class="giris-kutu">
+    <div class="card p-4">
+        <h4 class="mb-1">Veli Hesabı Oluştur</h4>
+        <p class="text-muted small mb-4">Hesabınız oluşturulduktan sonra doktorunuz çocuğunuzu hesabınıza bağlar ve gelişim bilgilerini görebilirsiniz.</p>
+        <form asp-action="Kayit" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+            <div class="mb-3">
+                <label asp-for="AdSoyad" class="form-label"></label>
+                <input asp-for="AdSoyad" class="form-control" />
+                <span asp-validation-for="AdSoyad" class="text-danger small"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+                <div id="emailDurum" class="small"></div>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Telefon" class="form-label"></label>
+                <input asp-for="Telefon" class="form-control" placeholder="05xx xxx xx xx" />
+            </div>
+            <div class="mb-3">
+                <label asp-for="Sifre" class="form-label"></label>
+                <input asp-for="Sifre" class="form-control" />
+                <span asp-validation-for="Sifre" class="text-danger small"></span>
+                <div class="progress mt-1" style="height:5px"><div id="sifreGuc" class="progress-bar" style="width:0"></div></div>
+            </div>
+            <div class="mb-3">
+                <label asp-for="SifreTekrar" class="form-label"></label>
+                <input asp-for="SifreTekrar" class="form-control" />
+                <span asp-validation-for="SifreTekrar" class="text-danger small"></span>
+            </div>
+            <button class="btn btn-pediatri w-100">Kayıt Ol</button>
+        </form>
+        <p class="text-center mt-3 mb-0 small">Zaten hesabınız var mı? <a asp-action="Giris">Giriş yapın</a></p>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // AJAX: e-posta daha önce kayıtlı mı?
+        $("#Email").on("blur", function () {
+            const email = $(this).val().trim();
+            if (!email) return $("#emailDurum").empty();
+            $.get("@Url.Action("EmailKontrol")", { email }, function (r) {
+                $("#emailDurum")
+                    .text(r.uygun ? "✓ Bu e-posta kullanılabilir" : "✗ Bu e-posta zaten kayıtlı")
+                    .attr("class", "small " + (r.uygun ? "text-success" : "text-danger"));
+            });
+        });
+
+        // DOM: şifre gücü göstergesi
+        $("#Sifre").on("input", function () {
+            const s = $(this).val();
+            let puan = 0;
+            if (s.length >= 6) puan++;
+            if (/[A-Z]/.test(s)) puan++;
+            if (/\d/.test(s)) puan++;
+            if (/[^A-Za-z0-9]/.test(s)) puan++;
+            const renk = ["bg-danger", "bg-danger", "bg-warning", "bg-info", "bg-success"][puan];
+            $("#sifreGuc").css("width", (puan * 25) + "%").attr("class", "progress-bar " + renk);
+        });
+    </script>
+}

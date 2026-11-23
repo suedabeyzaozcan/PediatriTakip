@@ -1,0 +1,23 @@
+@model List<Hastalar>
+@using PediatriTakip.Helpers
+@{ ViewData["Title"] = "Çocuklarım"; }
+<h3 class="mb-4">Çocuklarım</h3>
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Hesabınıza henüz bağlı bir çocuk yok. Doktorunuzdan, çocuğunuzun kaydını <strong>@User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value</strong> e-posta adresli hesabınıza bağlamasını isteyin.</div>
+}
+<div class="row g-3">
+@foreach (var h in Model)
+{
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5><i class="bi @(h.Cinsiyet == "Kız" ? "bi-gender-female text-danger" : "bi-gender-male text-primary")"></i> @h.AdSoyad</h5>
+                <p class="mb-1 text-muted">@YasHelper.YasMetni(h.DogumTarihi) · @YasHelper.Goster(h.DogumTarihi)</p>
+                <p class="mb-3 small">Doktor: @h.Doktor.AdSoyad</p>
+                <a asp-action="Detay" asp-route-id="@h.Id" class="btn btn-pediatri btn-sm">Gelişimi Görüntüle</a>
+            </div>
+        </div>
+    </div>
+}
+</div>
